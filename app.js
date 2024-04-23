@@ -2,34 +2,43 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const db = require('./db');
+const bodyParser = require('body-parser');
+
 const PORT = process.env.PORT || 3001;
 
-
-// Example route to test the database connection
-app.get('/', async (req, res) => {
-  try {
-    // Get a connection from the pool
-    const connection = await db.getConnection();
-
-    // Perform a query
-    const [rows, fields] = await connection.execute('SELECT * FROM your_table');
-
-    // Release the connection back to the pool
-    connection.release();
-
-    res.json({ rows });
-  } catch (error) {
-    console.error('Error executing query:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-
-
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'login.html'));
+});
+
+app.post('/login', async (req, res) => {
+  const { userID, password } = req.body;
+
+  try {
+    const [results] = await db.execute('SELECT * FROM Employee WHERE EmpID = ? AND Password = ?', [userID, password]);
+
+    if (results.length === 0) {
+      return res.status(401).send('Unauthorized'); // User not found or invalid credentials
+    }
+
+    const user = results[0];
+    let redirectUrl;
+
+    if (user.Administration === 1) {
+      redirectUrl = '/adminHome.html';
+    } else if (user.Job === 'radiologist') {
+      redirectUrl = '/radiologistHome.html';
+    } else {
+      redirectUrl = '/staffHome.html';
+    }
+
+    res.redirect(redirectUrl); // Redirect the user to the appropriate interface
+  } catch (error) {
+    console.error('Error checking credentials:', error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 app.listen(PORT, () => {
