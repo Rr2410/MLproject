@@ -126,7 +126,7 @@
 
 
 
-<body>
+
   <div class="search-container">
     <input type="text" id="search-bar" placeholder="Search">
     <br> <br>
@@ -148,7 +148,6 @@
         <th scope="col">Gender</th>
         <th scope="col">Last Diagnosis</th>
         <th scope="col">Medical History</th>
-        <th scope="col">Assigned Care Taker</th>
         <th scope="col">Edit or Delete</th>
       </tr>
     </thead>
@@ -170,21 +169,14 @@
 
   <script>
     const selectAllCheckbox = document.getElementById('select-all');
-    const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
-    const selectElements = document.querySelectorAll('select');
+    const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]:not(#select-all)');
 
-    selectAllCheckbox.addEventListener('change', function () {
-      checkboxes.forEach((checkbox) => {
-        checkbox.checked = selectAllCheckbox.checked;
-      });
-    });
+selectAllCheckbox.addEventListener('change', function () {
+  checkboxes.forEach((checkbox) => {
+    checkbox.checked = selectAllCheckbox.checked;
+  });
+});
 
-    selectElements.forEach((selectElement) => {
-      selectElement.addEventListener('change', function () {
-        const selectedOptions = Array.from(this.selectedOptions).map((option) => option.value);
-        console.log(selectedOptions);
-      });
-    });
   </script>
 
   <script>
@@ -208,11 +200,10 @@
             <td>${row.Gender}</td>
             <td>${row.MedicalHistory}</td>
             <td>${row.ImageProcessingHistory}</td>
-            <td>${row.responsibleEmpId}</td>
             <td>
-              <span class="edit-button"><i class="fas fa-pencil-alt"></i></span>
-              <span class="delete-button"><i class="fas fa-trash-alt"></i></span>
-            </td>
+  <span class="edit-button"><i class="fas fa-pencil-alt"></i></span>
+  <span class="delete-button"><i class="fas fa-trash-alt"></i></span>
+</td>
           `;
     
           dataList.appendChild(tr);
@@ -227,8 +218,6 @@
 
 <script>
   //search function
-
-  // Function to filter the table rows based on the search input
 const filterTable = () => {
   const searchText = document.getElementById('search-bar').value.toLowerCase();
   const rows = document.querySelectorAll('#data-list tr');
@@ -250,17 +239,10 @@ const filterTable = () => {
   });
 };
 
-// Event listener for the search input
 document.getElementById('search-bar').addEventListener('input', filterTable);
 
 </script>
 
-
-
-
-
-
 </body>
-
 
 </html>

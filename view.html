@@ -56,7 +56,7 @@
       </a>
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a href="view.html">Home</a></li>
+          <li><a href="editDB.html">Home</a></li>
           <li><a href="login.html">Log Out</a></li>
 
 
@@ -100,10 +100,6 @@
         </div>
     </nav>
 
-    <div class="search-container">
-      <input type="text" id="search-bar" placeholder="Search">
-      <br> <br>
-    </div>
 
     <style>
       #search-bar {
@@ -130,164 +126,125 @@
 
 
 
-    <body>
-      <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="select-all" />
-                <label class="form-check-label" for="select-all">Select All</label>
-              </div>
-            </th>
-            <th scope="col">Patient ID</th>
-            <th scope="col">Diagnosis</th>
-            <th scope="col">Image Link</th>
-    
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="row">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" />
-              </div>
-            </th>
-            <td>101</td>
-            <td>COVID-19</td>
-            <td>image101.jpg</td>
-           
-          </tr>
-          <tr>
-            <th scope="row">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" />
-              </div>
-            </th>
-            <td>102</td>
-            <td>Pneumonia</td>
-            <td>image102.jpg</td>
-          
-          </tr>
-          <tr>
-            <th scope="row">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" />
-              </div>
-            </th>
-            <td>103</td>
-            <td>Bronchitis</td>
-            <td>image103.jpg</td>
-        
-          </tr>
-          <!-- Additional rows here -->
-        </tbody>
-      </table>
 
-      <!-- Include Font Awesome library script -->
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
-
-
-      <div class="show-more">
-        <!-- Additional data to display -->
-        <p style="color: #8FB8ED;">Load More...</p>
-      </div>
-
-      <button type="button" class="btn btn-primary download-button custom-button">Download Selected Data</button>
-
-      <div class="show-more">
-        <!-- Additional data to display -->
-      </div>
-
-
-
-    </div>
+  <div class="search-container">
+    <input type="text" id="search-bar" placeholder="Search">
+    <br> <br>
+    <button type="button" class="btn btn-primary download-button custom-button">Print Selected Data</button>
   </div>
-</div>
 
-</div>
-</section>
-<!-- End Hero Section -->
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="select-all" />
+            <label class="form-check-label" for="select-all">Select All</label>
+          </div>
+        </th>
+        <th scope="col">Patient ID</th>
+        <th scope="col">First Name</th>
+        <th scope="col">Last Name</th>
+        <th scope="col">Gender</th>
+        <th scope="col">Last Diagnosis</th>
+        <th scope="col">Medical History</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="data-list">
 
-<main id="main">
+    </tbody>
+  </table>
 
+  <!-- Include Font Awesome library script -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
 
-</main><!-- End #main -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    .custom-button {
+      background-color: #a5c6f0;
+      border-color: #8FB8ED;
+      color: #fff;
+    }
+  </style>
 
-<script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
-<!-- ======= Footer ======= -->
-<footer id="footer" class="footer">
+  <script>
+    const selectAllCheckbox = document.getElementById('select-all');
+    const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]:not(#select-all)');
 
-  <div class="container">
-    <div class="row gy-4">
-      <div class="col-lg-5 col-md-12 footer-info">
-        <a href="index.html" class="logo d-flex align-items-center">
-          <span>ScanCov</span>
-        </a>
-        <p>Unleashing Unparalleled Precision in Respiratory Imaging; Elevate Diagnostic Confidence; Redefine Excellence in Patient Care.</p>
+selectAllCheckbox.addEventListener('change', function () {
+  checkboxes.forEach((checkbox) => {
+    checkbox.checked = selectAllCheckbox.checked;
+  });
+});
 
-      </div>
+  </script>
 
+  <script>
 
+    const loadAll = async () => {
+      try {
+        const response = await fetch(`/data?offset=0&limit=9999`); // Set a large limit to load all rows
+        const data = await response.json();
+        const dataList = document.getElementById('data-list');
+        data.forEach((row) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <th scope="row">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" />
+              </div>
+            </th>
+            <td>${row.PatientID}</td>
+            <td>${row.FirstName}</td>
+            <td>${row.LastName}</td>
+            <td>${row.Gender}</td>
+            <td>${row.MedicalHistory}</td>
+            <td>${row.ImageProcessingHistory}</td>
+            <td></td>
+          `;
+    
+          dataList.appendChild(tr);
+        });
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
 
-      <div class="container mt-4">
-        <div class="copyright">
-          &copy; Copyright <strong><span>ScanCov</span></strong>. All Rights Reserved
-        </div>
-        <div class="credits">
-          <!-- All the links in the footer should remain intact. -->
-          <!-- You can delete the links only if you purchased the pro version. -->
-          <!-- Licensing information: https://bootstrapmade.com/license/ -->
-          <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/impact-bootstrap-business-website-template/ -->
-          Designed by <a href="https://bootstrapmade.com/">F3 group</a>
-        </div>
-      </div>
+    document.addEventListener('DOMContentLoaded', loadAll);
+  </script>
 
-</footer><!-- End Footer -->
-<!-- End Footer -->
-
-<a href="#" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
-<div id="preloader"></div>
-
-<!-- Vendor JS Files -->
-<script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<script src="assets/vendor/aos/aos.js"></script>
-<script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
-<script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
-<script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-<script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-<script src="assets/vendor/php-email-form/validate.js"></script>
-
-<!-- Template Main JS File -->
-<script src="assets/js/main.js"></script>
-<style>
-  .custom-button {
-    background-color: #a5c6f0;
-    border-color: #8FB8ED;
-    color: #fff;
-  }
-</style>
 <script>
-  const selectAllCheckbox = document.getElementById('select-all');
-  const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
-  const selectElements = document.querySelectorAll('select');
+  //search function
+const filterTable = () => {
+  const searchText = document.getElementById('search-bar').value.toLowerCase();
+  const rows = document.querySelectorAll('#data-list tr');
 
-  selectAllCheckbox.addEventListener('change', function() {
-    checkboxes.forEach((checkbox) => {
-      checkbox.checked = selectAllCheckbox.checked;
-    });
-  });
+  rows.forEach(row => {
+    const patientID = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+    const medicalHistory = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+    const imageProcessingHistory = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+    const gender = row.querySelector('td:nth-child(5)').textContent.toLowerCase();
+    const firstName = row.querySelector('td:nth-child(6)').textContent.toLowerCase();
+    const lastName = row.querySelector('td:nth-child(7)').textContent.toLowerCase();
+    const responsibleEmpId = row.querySelector('td:nth-child(8)').textContent.toLowerCase();
 
-  selectElements.forEach((selectElement) => {
-    selectElement.addEventListener('change', function() {
-      const selectedOptions = Array.from(this.selectedOptions).map((option) => option.value);
-      console.log(selectedOptions);
-    });
+    if (patientID === searchText || medicalHistory === searchText || imageProcessingHistory === searchText || gender === searchText || firstName === searchText || lastName === searchText || responsibleEmpId === searchText) {
+      row.style.display = '';
+    } else {
+      row.style.display = 'none';
+    }
   });
+};
+
+document.getElementById('search-bar').addEventListener('input', filterTable);
+
 </script>
 
 </body>
 
+
 </html>
+
+
+
+
