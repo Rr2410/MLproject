@@ -327,6 +327,33 @@ document.querySelectorAll('.save-button').forEach(button => {
 });
 
  </script>
+
+
+<script>
+  //search function
+  const filterTable = () => {
+    const searchText = document.getElementById('search-bar').value.toLowerCase();
+    const rows = document.querySelectorAll('#data-list tr');
+
+    rows.forEach(row => {
+      const EmpID = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+      const firstName = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+      const lastName = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+      const Job = row.querySelector('td:nth-child(5)').textContent.toLowerCase();
+      const Administration = row.querySelector('td:nth-child(6)').textContent.toLowerCase();
+      const supervisorId = row.querySelector('td:nth-child(7)').textContent.toLowerCase();
+
+      if (EmpID === searchText || firstName === searchText || lastName === searchText || Job === searchText || Administration === searchText || supervisorId === searchText) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
+      }
+    });
+  };
+
+  document.getElementById('search-bar').addEventListener('input', filterTable);
+</script>
+
 </body>
 
 </html>

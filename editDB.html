@@ -148,6 +148,7 @@
         <th scope="col">Gender</th>
         <th scope="col">Last Diagnosis</th>
         <th scope="col">Medical History</th>
+        <th scope="col">Care Providor ID</th>
         <th scope="col">Edit or Delete</th>
       </tr>
     </thead>
@@ -200,6 +201,7 @@ selectAllCheckbox.addEventListener('change', function () {
             <td>${row.Gender}</td>
             <td>${row.MedicalHistory}</td>
             <td>${row.ImageProcessingHistory}</td>
+            <td>${row.responsibleEmpId}</td>
             <td>
   <span class="edit-button"><i class="fas fa-pencil-alt"></i></span>
   <span class="delete-button"><i class="fas fa-trash-alt"></i></span>
