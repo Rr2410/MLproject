@@ -248,24 +248,7 @@
         color: #fff;
     }
 </style>
-<script>
-  const selectAllCheckbox = document.getElementById('select-all');
-  const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
-  const selectElements = document.querySelectorAll('select');
 
-  selectAllCheckbox.addEventListener('change', function () {
-    checkboxes.forEach((checkbox) => {
-      checkbox.checked = selectAllCheckbox.checked;
-    });
-  });
-
-  selectElements.forEach((selectElement) => {
-    selectElement.addEventListener('change', function () {
-      const selectedOptions = Array.from(this.selectedOptions).map((option) => option.value);
-      console.log(selectedOptions);
-    });
-  });
-</script>
 <script>
 
   const loadAll = async () => {
@@ -352,6 +335,35 @@ document.querySelectorAll('.save-button').forEach(button => {
   };
 
   document.getElementById('search-bar').addEventListener('input', filterTable);
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const table = document.querySelector('table');
+    const selectAllCheckbox = document.getElementById('select-all');
+
+    table.addEventListener('change', function(event) {
+      const target = event.target;
+      if (target.type === 'checkbox' && target !== selectAllCheckbox) {
+        // Stop event propagation to prevent "Select All" checkbox from being toggled
+        event.stopPropagation();
+      }
+    });
+
+    selectAllCheckbox.addEventListener('change', function() {
+      const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+      checkboxes.forEach((checkbox) => {
+        checkbox.checked = selectAllCheckbox.checked;
+      });
+    });
+
+    const selectElements = document.querySelectorAll('select');
+    selectElements.forEach((selectElement) => {
+      selectElement.addEventListener('change', function () {
+        const selectedOptions = Array.from(this.selectedOptions).map((option) => option.value);
+        console.log(selectedOptions);
+      });
+    });
+  });
 </script>
 
 </body>
