@@ -4,6 +4,7 @@ const path = require('path');
 const db = require('./db');
 const bodyParser = require('body-parser');
 
+
 const PORT = process.env.PORT || 3001;
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -134,3 +135,42 @@ app.get('/emp-data', async (req, res) => {
 
 
 
+// Handle password change request
+app.post('/change-password', async (req, res) => {
+  const { userID, currentPassword, newPassword } = req.body;
+
+  try {
+    // Check if userID and currentPassword match
+    const [results] = await db.execute('SELECT * FROM Employee WHERE EmpID = ? AND Password = ?', [userID, currentPassword]);
+
+    if (results.length === 0) {
+      return res.status(401).send('Unauthorized'); // User not found or invalid credentials
+    }
+
+    // Update the password in the database
+    await db.execute('UPDATE Employee SET Password = ? WHERE EmpID = ?', [newPassword, userID]);
+
+    res.redirect('/password-changed.html');
+  } catch (error) {
+    console.error('Error updating password:', error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+// Handle password check request
+app.post('/check-password', async (req, res) => {
+  const { userID, currentPassword } = req.body;
+
+  try {
+    // Check if userID and currentPassword match
+    const [results] = await db.execute('SELECT * FROM Employee WHERE EmpID = ? AND Password = ?', [userID, currentPassword]);
+
+    if (results.length === 0) {
+      return res.json({ success: false }); // User not found or invalid credentials
+    }
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Error checking password:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
