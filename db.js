@@ -1,5 +1,6 @@
-// db.js
+const { mod } = require('@tensorflow/tfjs-node');
 const mysql = require('mysql2');
+const fs = require('fs');
 
 // Create a connection pool
 const pool = mysql.createPool({
@@ -7,9 +8,13 @@ const pool = mysql.createPool({
   user: 'avnadmin',
   password: 'AVNS_S2185k_gM0yQwl1y07K',
   database: 'defaultdb',
+  port: 22562,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+  ssl: {
+    ca: fs.readFileSync('/Users/renada/Downloads/ca.pem'),
+  },
 });
 
 // Export the pool

@@ -82,10 +82,11 @@
 
     <div class="icon-boxes position-relative">
       <div class="container position-relative">
+        <nav>
         <div class="row gy-4 mt-5">
 
         
-
+    
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
@@ -157,9 +158,9 @@
             <label class="form-check-label" for="select-all">Select All</label>
           </div>
         </th>  
-        <th scope="col">Employee ID</th>
         <th scope="col">First Name</th>
         <th scope="col">Last Name</th>
+        <th scope="col">Employee ID</th>
         <th scope="col">Job</th>
         <th scope="col">Administration</th>
         <th scope="col">Access</th>
@@ -264,9 +265,9 @@
               <input class="form-check-input" type="checkbox" value="" />
             </div>
           </th> 
-          <td>${row.EmpID}</td>
           <td>${row.FirstName}</td>
           <td>${row.LastName}</td>
+          <td>${row.EmpID}</td>
           <td>${row.Job}</td>
           <td>${row.Administration}</td>
           <td>${row.Access}</td>
@@ -319,14 +320,15 @@ document.querySelectorAll('.save-button').forEach(button => {
     const rows = document.querySelectorAll('#data-list tr');
 
     rows.forEach(row => {
-      const EmpID = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-      const firstName = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-      const lastName = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
-      const Job = row.querySelector('td:nth-child(5)').textContent.toLowerCase();
-      const Administration = row.querySelector('td:nth-child(6)').textContent.toLowerCase();
+      const EmpID = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+      const firstName = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
+      const lastName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+      const Job = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
+      const Administration = row.querySelector('td:nth-child(5)').textContent.toLowerCase();
+      const Access = row.querySelector('td:nth-child(6)').textContent.toLowerCase();
       const supervisorId = row.querySelector('td:nth-child(7)').textContent.toLowerCase();
 
-      if (EmpID === searchText || firstName === searchText || lastName === searchText || Job === searchText || Administration === searchText || supervisorId === searchText) {
+      if (EmpID === searchText || firstName === searchText || lastName === searchText || Job === searchText || Administration === searchText || supervisorId === searchText || Access === searchText) {
         row.style.display = '';
       } else {
         row.style.display = 'none';
