@@ -10,9 +10,8 @@
   <meta content="" name="keywords">
 
   <!-- Favicons -->
- <!-- Favicons -->
- <link href="assets/img/Screenshot 2024-02-19 at 9.23.15 PM.png" rel="icon">
- <link href="assets/img/Screenshot 2024-02-19 at 9.23.15 PM.png" rel="apple-touch-icon">
+  <link href="assets/img/Screenshot 2024-02-19 at 9.23.15 PM.png" rel="icon">
+  <link href="assets/img/Screenshot 2024-02-19 at 9.23.15 PM.png" rel="apple-touch-icon">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
   <!-- Include Font Awesome library -->
@@ -20,7 +19,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
   <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -131,6 +130,8 @@
     <input type="text" id="search-bar" placeholder="Search">
     <br> <br>
     <button type="button" class="btn btn-primary download-button custom-button">Save Changes</button>
+    <a href="new_patient.html" class="btn btn-primary custom-button"><i class="fas fa-user-plus me-2"></i>Add New Patient</a>
+    <button type="button" id="delete-selected-button" class="btn btn-danger" disabled>Delete Selected</button>
   </div>
 
   <table class="table">
@@ -192,13 +193,15 @@
             <td>${row.ImageProcessingHistory}</td>
             <td>${row.responsibleEmpId}</td>
             <td>
-  <span class="edit-button"><i class="fas fa-pencil-alt"></i></span>
-  <span class="delete-button"><i class="fas fa-trash-alt"></i></span>
-</td>
+              <span class="edit-button"><i class="fas fa-pencil-alt"></i></span>
+              <span class="delete-button" data-patient-id="${row.PatientID}"><i class="fas fa-trash-alt"></i></span>
+            </td>
           `;
     
           dataList.appendChild(tr);
         });
+
+
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -207,64 +210,33 @@
     document.addEventListener('DOMContentLoaded', loadAll);
   </script>
 
-<script>
-  //search function
-const filterTable = () => {
-  const searchText = document.getElementById('search-bar').value.toLowerCase();
-  const rows = document.querySelectorAll('#data-list tr');
+  <script>
+    //search function
+    const filterTable = () => {
+      const searchBar = document.getElementById('search-bar');
+      const filter = searchBar.value.toLowerCase();
+      const rows = document.querySelectorAll('#data-list tr');
+      rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const matches = Array.from(cells).some(cell => cell.textContent.toLowerCase().includes(filter));
+        row.style.display = matches ? '' : 'none';
+      });
+    };
 
-  rows.forEach(row => {
-    const patientID = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-    const medicalHistory = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-    const imageProcessingHistory = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
-    const gender = row.querySelector('td:nth-child(5)').textContent.toLowerCase();
-    const firstName = row.querySelector('td:nth-child(6)').textContent.toLowerCase();
-    const lastName = row.querySelector('td:nth-child(7)').textContent.toLowerCase();
-    const responsibleEmpId = row.querySelector('td:nth-child(8)').textContent.toLowerCase();
+    document.getElementById('search-bar').addEventListener('input', filterTable);
 
-    if (patientID === searchText || medicalHistory === searchText || imageProcessingHistory === searchText || gender === searchText || firstName === searchText || lastName === searchText || responsibleEmpId === searchText) {
-      row.style.display = '';
-    } else {
-      row.style.display = 'none';
-    }
-  });
-};
-
-document.getElementById('search-bar').addEventListener('input', filterTable);
-
-</script>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const table = document.querySelector('table');
+    // 'Select All' functionality
     const selectAllCheckbox = document.getElementById('select-all');
-
-    table.addEventListener('change', function(event) {
-      const target = event.target;
-      if (target.type === 'checkbox' && target !== selectAllCheckbox) {
-        // Stop event propagation to prevent "Select All" checkbox from being toggled
-        event.stopPropagation();
-      }
-    });
-
-    selectAllCheckbox.addEventListener('change', function() {
-      const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
-      checkboxes.forEach((checkbox) => {
+    selectAllCheckbox.addEventListener('change', () => {
+      const checkboxes = document.querySelectorAll('#data-list .form-check-input');
+      checkboxes.forEach(checkbox => {
         checkbox.checked = selectAllCheckbox.checked;
       });
+      document.getElementById('delete-selected-button').disabled = !selectAllCheckbox.checked;
     });
 
-    const selectElements = document.querySelectorAll('select');
-    selectElements.forEach((selectElement) => {
-      selectElement.addEventListener('change', function () {
-        const selectedOptions = Array.from(this.selectedOptions).map((option) => option.value);
-        console.log(selectedOptions);
-      });
-    });
-  });
-</script>
 
+  </script>
 
 </body>
-
 </html>

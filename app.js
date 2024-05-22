@@ -3,6 +3,7 @@ const app = express();
 const path = require('path');
 const db = require('./db');
 const bodyParser = require('body-parser');
+const ort = require('onnxruntime-web');
 
 
 const PORT = process.env.PORT || 3001;
@@ -10,10 +11,10 @@ const PORT = process.env.PORT || 3001;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'login.html'));
 });
-
 app.post('/login', async (req, res) => {
   const { userID, password } = req.body;
 
@@ -29,7 +30,7 @@ app.post('/login', async (req, res) => {
 
     if (user.Administration === 1) {
       redirectUrl = '/adminHome.html';
-    } else if (user.Job === 'radiologist') {
+    } else if (user.Job === 'Radiologist') {
       redirectUrl = '/radiologistHome.html';
     } else {
       redirectUrl = '/staffHome.html';
@@ -173,4 +174,21 @@ app.post('/check-password', async (req, res) => {
     console.error('Error checking password:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
+});
+
+
+app.post('/saveDiagnosis', (req, res) => {
+  const { patientId, predictedClass } = req.body;
+
+  const query = 'UPDATE Patients SET MedicalHistory = ? WHERE PatientID = ?';
+
+  const params = [`\n${predictedClass}`, patientId];
+  db.query(query, params, (err, results) => {
+    if (err) {
+      console.error('Error updating medical history:', err);
+      res.status(500).send('Error updating medical history.');
+    } else {
+      res.send('Diagnosis saved successfully.');
+    }
+  });
 });

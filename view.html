@@ -130,10 +130,13 @@
   <div class="search-container">
     <input type="text" id="search-bar" placeholder="Search">
     <br> <br>
-    <button type="button" class="btn btn-primary download-button custom-button">Print Selected Data</button>
+  
+      <button  onclick="printSelectedData()" type="button" class="btn btn-primary download-button custom-button">Print Selected Data</button>
+   
+    
   </div>
 
-  <table class="table">
+  <table class="table" >
     <thead>
       <tr>
         <th scope="col">
@@ -258,14 +261,77 @@ document.getElementById('search-bar').addEventListener('input', filterTable);
       });
     });
   });
-</script>
 
+  const printSelectedData = () => {
+  const selectedRows = document.querySelectorAll('tbody input[type="checkbox"]:checked');
+  let printContent = '';
+
+  // Calculate the maximum length of each column
+  const columnLengths = [
+    'Patient ID',
+    'First Name',
+    'Last Name',
+    'Gender',
+    'Last Diagnosis',
+    'Medical History',
+    'Care Provider ID',
+  ].map(title => title.length);
+
+  selectedRows.forEach(row => {
+    const cells = row.closest('tr').querySelectorAll('td');
+    const rowData = Array.from(cells).map(cell => cell.textContent.trim());
+
+    rowData.forEach((value, index) => {
+      columnLengths[index] = Math.max(columnLengths[index], value.length);
+    });
+  });
+
+  // Print the header row
+  printContent += 'Patient ID'.padEnd(columnLengths[0] + 2) +
+                  'First Name'.padEnd(columnLengths[1] + 2) +
+                  'Last Name'.padEnd(columnLengths[2] + 2) +
+                  'Gender'.padEnd(columnLengths[3] + 2) +
+                  'Last Diagnosis'.padEnd(columnLengths[4] + 2) +
+                  'Medical History'.padEnd(columnLengths[5] + 2) +
+                  'Care Provider ID'.padEnd(columnLengths[6] + 2) +
+                  '\n';
+
+  // Print the data rows
+  selectedRows.forEach(row => {
+    const cells = row.closest('tr').querySelectorAll('td');
+    const rowData = Array.from(cells).map(cell => cell.textContent.trim());
+
+    printContent += rowData[0].padEnd(columnLengths[0] + 2) +
+                    rowData[1].padEnd(columnLengths[1] + 2) +
+                    rowData[2].padEnd(columnLengths[2] + 2) +
+                    rowData[3].padEnd(columnLengths[3] + 2) +
+                    rowData[4].padEnd(columnLengths[4] + 2) +
+                    rowData[5].padEnd(columnLengths[5] + 2) +
+                    rowData[6].padEnd(columnLengths[6] + 2) +
+                    '\n';
+  });
+
+  const printWindow = window.open('', '', 'height=600,width=800');
+  printWindow.document.write('<html><head><title>Print</title></head><body><pre>' + printContent + '</pre></body></html>');
+  printWindow.document.close();
+  printWindow.print();
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  const table = document.querySelector('table');
+  const selectAllCheckbox = document.getElementById('select-all');
+
+  table.addEventListener('change', function(event) {
+    if (event.target.type === 'checkbox' && event.target.id !== 'select-all') {
+      const checkboxes = table.querySelectorAll('tbody input[type="checkbox"]');
+      const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
+      selectAllCheckbox.checked = allChecked;
+    }
+  });
+});
+</script>
 
 </body>
 
 
 </html>
-
-
-
-

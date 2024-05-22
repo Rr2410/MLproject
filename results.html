@@ -29,16 +29,9 @@
   <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
   <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
 
-  <!-- Template Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
 
-  <!-- =======================================================
-  * Template Name: Impact
-  * Updated: Jan 09 2024 with Bootstrap v5.3.2
-  * Template URL: https://bootstrapmade.com/impact-bootstrap-business-website-template/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
+
 
   <style>
     /* Custom CSS styles */
@@ -78,13 +71,9 @@
 </head>
 
 <body>
-  <!-- Your existing header content here -->
   <header id="header" class="header d-flex align-items-center">
-
     <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
       <a href="index.html" class="logo d-flex align-items-center">
-        <!-- Uncomment the line below if you also wish to use an image logo -->
-        <!-- <img src="assets/img/logo.png" alt=""> -->
         <h1>ScanCov<span>.</span></h1>
       </a>
       <nav id="navbar" class="navbar">
@@ -100,24 +89,26 @@
     </div>
   </header><!-- End Header -->
   
-  <!-- Main content area -->
   <div class="container mt-5">
     <div class="row justify-content-center">
       <div class="col-md-6">
         <br> <br> <br> <br>
         <h1>Diagnosis is:</h1>
         <div class="diagnosis-box">
-            
-            <h2 id="result" class="text-center">Covid-19</h2>
+            <h2 id="result" class="text-center"></h2>
+            <script>
+              document.addEventListener("DOMContentLoaded", function() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const predictedClass = urlParams.get('predictedClass');
+                document.getElementById("predicted-class").innerText = `${predictedClass}`;
+              });
+            </script>
+            <p id="predicted-class" style="font-weight: bold;font-size: large; color: midnightblue;"></p>
           </form>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- Your existing footer content here -->
-
-  <!-- Include necessary JavaScript files and libraries -->
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   
