@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>ScanCov - Index</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+  <link href="assets/img/Screenshot 2024-02-19 at 9.23.15 PM.png" rel="icon">
+  <link href="assets/img/Screenshot 2024-02-19 at 9.23.15 PM.png" rel="apple-touch-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="assets/css/main.css" rel="stylesheet">
+  <style>
+    .container {
+      margin-top: 100px;
+    }
+    .diagnosis-box {
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .progress-bar {
+      display: none;
+      width: 100%;
+      height: 20px;
+      background-color: #f3f3f3;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 20px;
+    }
+    .progress-bar-inner {
+      width: 0;
+      height: 100%;
+      background-color: rgb(155, 215, 255);
+      text-align: center;
+      line-height: 20px;
+      color: white;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header id="header" class="header d-flex align-items-center">
+    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+      <a href="index.html" class="logo d-flex align-items-center">
+        <h1>ScanCov<span>.</span></h1>
+      </a>
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a href="upload.html">Home</a></li>
+          <li><a href="login.html">Log Out</a></li>
+        </ul>
+      </nav>
+      <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
+      <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
+    </div>
+  </header>
+  <div class="container">
+    <div class="row d-flex justify-content-center">
+      <div class="col-md-6">
+        <div class="diagnosis-box">
+          <h5 class="text-left">New Patient Record</h5>
+          <form action="/addPatient" method="post">
+            <div class="mb-3">
+              <label for="patientFName" class="form-label">First Name:</label>
+              <input class="form-control" type="text" id="patientFName" name="patientFName" required>
+            </div>
+            <div class="mb-3">
+              <label for="patientLName" class="form-label">Last Name:</label>
+              <input class="form-control" type="text" id="patientLName" name="patientLName" required>
+            </div>
+            <div class="mb-3">
+              <label for="patientDOB" class="form-label">Date of Birth:</label>
+              <input class="form-control" type="text" id="patientDOB" name="patientDOB" placeholder="DD-MM-YYYY" required>
+            </div>
+            <div class="mb-3">
+              <label for="patientGender" class="form-label">Gender:</label>
+              <input class="form-control" type="text" id="patientGender" name="patientGender" required>
+            </div>
+            <div class="mb-3">
+              <label for="patientHist" class="form-label">Medical History:</label>
+              <textarea class="form-control" id="patientHist" name="patientHist" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="patientHistIMG" class="form-label">Image Processing History:</label>
+              <textarea class="form-control" id="patientHistIMG" name="patientHistIMG" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="patientCareID" class="form-label">Responsible Caregiver ID:</label>
+              <input class="form-control" type="text" id="patientCareID" name="patientCareID" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/vendor/aos/aos.js"></script>
+  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="assets/vendor/php-email-form/validate.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
