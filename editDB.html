@@ -48,7 +48,7 @@
   <header id="header" class="header d-flex align-items-center">
 
     <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
-      <a href="index.html" class="logo d-flex align-items-center">
+      <a href="editDB.html" class="logo d-flex align-items-center">
         <!-- Uncomment the line below if you also wish to use an image logo -->
         <!-- <img src="assets/img/logo.png" alt=""> -->
         <h1>ScanCov<span>.</span></h1>
@@ -130,18 +130,15 @@
     <input type="text" id="search-bar" placeholder="Search">
     <br> <br>
     <button type="button" class="btn btn-primary download-button custom-button">Save Changes</button>
-    <a href="new_patient.html" class="btn btn-primary custom-button"><i class="fas fa-user-plus me-2"></i>Add New Patient</a>
-    <button type="button" id="delete-selected-button" class="btn btn-danger" disabled>Delete Selected</button>
+    <a href="add_patient.html" class="btn btn-primary custom-button"><i class="fas fa-user-plus me-2"></i>Add New Patient</a>
+    
   </div>
 
   <table class="table">
     <thead>
       <tr>
         <th scope="col">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="select-all" />
-            <label class="form-check-label" for="select-all">Select All</label>
-          </div>
+          
         </th>
         <th scope="col">Patient ID</th>
         <th scope="col">First Name</th>
@@ -181,9 +178,7 @@
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <th scope="row">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" />
-              </div>
+              
             </th>
             <td>${row.PatientID}</td>
             <td>${row.FirstName}</td>
@@ -201,6 +196,19 @@
           dataList.appendChild(tr);
         });
 
+        // Add event listeners for delete buttons
+        const deleteButtons = document.querySelectorAll('.delete-button');
+        deleteButtons.forEach(button => {
+          button.addEventListener('click', async (event) => {
+            const patientId = event.target.closest('.delete-button').getAttribute('data-patient-id');
+            const response = await fetch(`/delete-patient/${patientId}`, { method: 'DELETE' });
+            if (response.ok) {
+              event.target.closest('tr').remove();
+            } else {
+              console.error('Failed to delete patient');
+            }
+          });
+        });
 
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -225,18 +233,44 @@
 
     document.getElementById('search-bar').addEventListener('input', filterTable);
 
-    // 'Select All' functionality
-    const selectAllCheckbox = document.getElementById('select-all');
-    selectAllCheckbox.addEventListener('change', () => {
-      const checkboxes = document.querySelectorAll('#data-list .form-check-input');
-      checkboxes.forEach(checkbox => {
-        checkbox.checked = selectAllCheckbox.checked;
-      });
-      document.getElementById('delete-selected-button').disabled = !selectAllCheckbox.checked;
+
+    // Enable delete button based on row selections
+    const dataList = document.getElementById('data-list');
+    dataList.addEventListener('change', (event) => {
+      if (event.target.classList.contains('form-check-input')) {
+        const checkboxes = document.querySelectorAll('#data-list .form-check-input:checked');
+        document.getElementById('delete-selected-button').disabled = checkboxes.length === 0;
+      }
     });
 
+    // Delete selected rows
+    const deleteSelectedButton = document.getElementById('delete-selected-button');
+    deleteSelectedButton.addEventListener('click', async () => {
+      const checkboxes = document.querySelectorAll('#data-list .form-check-input:checked');
+      const patientIds = Array.from(checkboxes).map(checkbox => checkbox.closest('tr').querySelector('.delete-button').getAttribute('data-patient-id'));
+
+      try {
+        const response = await fetch(`/delete-patients`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ patientIds })
+        });
+
+        if (response.ok) {
+          checkboxes.forEach(checkbox => checkbox.closest('tr').remove());
+          document.getElementById('delete-selected-button').disabled = true;
+        } else {
+          console.error('Failed to delete patients');
+        }
+      } catch (error) {
+        console.error('Error deleting patients:', error);
+      }
+    });
 
   </script>
+
 
 </body>
 </html>

@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <!-- Include necessary CSS files and libraries -->
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="assets/css/main.css" rel="stylesheet">
-
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <title>ScanCov - Password Changed Successfully</title>
+  <title>ScanCov - Index</title>
   <meta content="" name="description">
   <meta content="" name="keywords">
 
   <!-- Favicons -->
-  <link href="assets/img/favicon.png" rel="icon">
-  <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+ <!-- Favicons -->
+ <link href="assets/img/Screenshot 2024-02-19 at 9.23.15 PM.png" rel="icon">
+ <link href="assets/img/Screenshot 2024-02-19 at 9.23.15 PM.png" rel="apple-touch-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
+  <!-- Include Font Awesome library -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,89 +29,107 @@
   <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
   <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
 
+  <!-- Template Main CSS File -->
   <link href="assets/css/main.css" rel="stylesheet">
-
 
 
   <style>
     /* Custom CSS styles */
-    body {
-      background-color: #f8f9fa; /* Light gray background color */
-      font-family: 'Open Sans', sans-serif;
-      color: #333; /* Text color */
-    }
-
     .container {
       margin-top: 100px; /* Adjust the top margin to center the box vertically */
     }
-
     .diagnosis-box {
-      background-color: #fff; /* White background color */
+      background-color: #f8f9fa; /* Light gray background color */
       padding: 20px; /* Padding around the box */
       border-radius: 10px; /* Rounded corners */
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Box shadow */
     }
-
-    .go-back-button {
-      background-color: #8fb8ed; /* Button background color */
-      border-color: #8fb8ed; /* Button border color */
-      color: #fff; /* Button text color */
-      border-radius: 20px; /* Button border radius */
-      padding: 10px 20px; /* Button padding */
-      text-decoration: none; /* Remove underline from link */
-      display: inline-block; /* Make it inline block */
-      margin-top: 20px; /* Add some top margin */
+    .progress-bar {
+      display: none;
+      width: 100%;
+      height: 20px;
+      background-color: #f3f3f3;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 20px;
     }
-
-    .go-back-button:hover {
-      background-color: #6f9ddc; /* Button background color on hover */
-      border-color: #6f9ddc; /* Button border color on hover */
+    .progress-bar-inner {
+      width: 0;
+      height: 100%;
+      background-color:rgb(155, 215, 255);
+      text-align: center;
+      line-height: 20px;
+      color: white;
+      border-radius: 10px;
     }
   </style>
 </head>
-
 <body>
   <header id="header" class="header d-flex align-items-center">
     <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
-      <a href="index.html" class="logo d-flex align-items-center">
+      <a href="results.html" class="logo d-flex align-items-center">
         <h1>ScanCov<span>.</span></h1>
       </a>
       <nav id="navbar" class="navbar">
         <ul>
-          <li><a href="login.html">Home</a></li>
+          <li><a href="results.html">Home</a></li>
           <li><a href="login.html">Log Out</a></li>
         </ul>
-      </nav><!-- .navbar -->
-
+      </nav>
       <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
       <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
-
     </div>
-  </header><!-- End Header -->
-  
+  </header>
+
   <div class="container mt-5">
     <div class="row justify-content-center">
       <div class="col-md-6">
-        <br> <br> <br> <br>
+        <br><br><br><br>
         <h1>Diagnosis is:</h1>
         <div class="diagnosis-box">
-            <h2 id="result" class="text-center"></h2>
-            <script>
-              document.addEventListener("DOMContentLoaded", function() {
-                const urlParams = new URLSearchParams(window.location.search);
-                const predictedClass = urlParams.get('predictedClass');
-                document.getElementById("predicted-class").innerText = `${predictedClass}`;
-              });
-            </script>
-            <p id="predicted-class" style="font-weight: bold;font-size: large; color: midnightblue;"></p>
+          <h2 id="result" class="text-center"></h2>
+          <script>
+            document.addEventListener("DOMContentLoaded", function() {
+              const urlParams = new URLSearchParams(window.location.search);
+              const predictedClass = urlParams.get('predictedClass');
+              const patientId = urlParams.get('patientId');
+              document.getElementById("predicted-class").innerText = predictedClass;
+              document.getElementById("patient-id").innerText = `Patient ID: ${patientId}`;
+            });
+          </script>
+          <p id="predicted-class" style="font-weight: bold; font-size: xx-large; color: black;"></p>
+          <p id="patient-id" style="font-weight: bold; font-size: x-large; color: black;"></p>
+          <form action="/saveDiagnosis" method="post">
+            <input type="hidden" name="patientId" id="hiddenPatientId">
+            <input type="hidden" name="predictedClass" id="hiddenPredictedClass">
+            <button type="submit" class="btn btn-primary custom-button">Save Diagnosis</button>
           </form>
         </div>
+        <br><br>
+        <button type="submit" class="btn btn-primary custom-button">
+          <a href="upload.html" style="color: white; text-decoration: none;">Go back</a>
+        </button>
       </div>
     </div>
   </div>
+  <style>
+    .custom-button {
+      background-color: #a5c6f0;
+      border-color: #8FB8ED;
+      color: #fff;
+      font-size: larger;
+    }
+  </style>
   <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const predictedClass = urlParams.get('predictedClass');
+      const patientId = urlParams.get('patientId');
+      document.getElementById('hiddenPatientId').value = patientId;
+      document.getElementById('hiddenPredictedClass').value = predictedClass;
+    });
+  </script>
 </body>
-
 </html>

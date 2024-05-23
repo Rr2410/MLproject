@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+  <title>Edit Patient - ScanCov</title>
+  <meta content="" name="description">
+  <meta content="" name="keywords">
+
+  <!-- Favicons -->
+  <link href="assets/img/Screenshot 2024-02-19 at 9.23.15 PM.png" rel="icon">
+  <link href="assets/img/Screenshot 2024-02-19 at 9.23.15 PM.png" rel="apple-touch-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700&family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700&display=swap" rel="stylesheet">
+
+  <!-- Vendor CSS Files -->
+  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+
+  <!-- Template Main CSS File -->
+  <link href="assets/css/main.css" rel="stylesheet">
+</head>
+
+<body>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header d-flex align-items-center">
+    <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
+      <a href="edit-patient.html" class="logo d-flex align-items-center">
+        <h1>ScanCov<span>.</span></h1>
+      </a>
+      <nav id="navbar" class="navbar">
+        <ul>
+          <li><a href="edit-patient.html">Home</a></li>
+          <li><a href="login.html">Log Out</a></li>
+        </ul>
+      </nav><!-- .navbar -->
+
+      <i class="mobile-nav-toggle mobile-nav-show bi bi-list"></i>
+      <i class="mobile-nav-toggle mobile-nav-hide d-none bi bi-x"></i>
+    </div>
+  </header><!-- End Header -->
+
+  <section id="hero" class="hero">
+    <div class="container position-relative">
+      <div class="row gy-5" data-aos="fade-in">
+        <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center text-center text-lg-start"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container mt-5">
+    <h2>Edit Patient Information</h2>
+    <form id="edit-patient-form">
+      <input type="hidden" id="patient-id" name="patientId">
+      <div class="mb-3">
+        <label for="first-name" class="form-label">First Name</label>
+        <input type="text" class="form-control" id="first-name" name="firstName" required>
+      </div>
+      <div class="mb-3">
+        <label for="last-name" class="form-label">Last Name</label>
+        <input type="text" class="form-control" id="last-name" name="lastName" required>
+      </div>
+      <div class="mb-3">
+        <label for="gender" class="form-label">Gender</label>
+        <input type="text" class="form-control" id="gender" name="gender" required>
+      </div>
+      <div class="mb-3">
+        <label for="medical-history" class="form-label">Medical History</label>
+        <input type="text" class="form-control" id="medical-history" name="medicalHistory" required>
+      </div>
+      <div class="mb-3">
+        <label for="image-processing-history" class="form-label">Image Processing History</label>
+        <input type="text" class="form-control" id="image-processing-history" name="imageProcessingHistory" required>
+      </div>
+      <div class="mb-3">
+        <label for="responsible-emp-id" class="form-label">Care Provider ID</label>
+        <input type="text" class="form-control" id="responsible-emp-id" name="responsibleEmpId" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Save Changes</button>
+    </form>
+  </div>
+
+  <!-- Include Font Awesome library script -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const patientId = urlParams.get('patientId');
+      if (patientId) {
+        const response = await fetch(`/get-patient/${patientId}`);
+        const patient = await response.json();
+
+        document.getElementById('patient-id').value = patient.PatientID;
+        document.getElementById('first-name').value = patient.FirstName;
+        document.getElementById('last-name').value = patient.LastName;
+        document.getElementById('gender').value = patient.Gender;
+        document.getElementById('medical-history').value = patient.MedicalHistory;
+        document.getElementById('image-processing-history').value = patient.ImageProcessingHistory;
+        document.getElementById('responsible-emp-id').value = patient.responsibleEmpId;
+      }
+
+      document.getElementById('edit-patient-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const data = {};
+        formData.forEach((value, key) => (data[key] = value));
+
+        const response = await fetch(`/update-patient/${data.patientId}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+
+        if (response.ok) {
+          alert('Patient information updated successfully');
+          window.location.href = 'index.html';
+        } else {
+          alert('Failed to update patient information');
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

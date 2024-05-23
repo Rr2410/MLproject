@@ -73,7 +73,7 @@
   <header id="header" class="header d-flex align-items-center">
 
     <div class="container-fluid container-xl d-flex align-items-center justify-content-between">
-      <a href="index.html" class="logo d-flex align-items-center">
+      <a href="upload.html" class="logo d-flex align-items-center">
         <h1>ScanCov<span>.</span></h1>
       </a>
       <nav id="navbar" class="navbar">
@@ -101,105 +101,68 @@
                         <input class="form-control" type="text" id="patientIdInput">
                     </div>
                     <div class="mb-3">
-                        <label for="additionalInfoInput" class="form-label">Additional Information:</label>
-                        <textarea class="form-control" id="additionalInfoInput" rows="3"></textarea>
-                    </div>
-                    <div class="mb-3">
                         <label for="fileInput" class="form-label">Choose Image to Upload:</label>
                         <input id="imageUpload" type="file"  accept="image/*">
                         <canvas id="canvas" style="display:none;"></canvas> 
                         <script>
                           document.getElementById('imageUpload').addEventListener('change', async (event) => {
-
-                           const file = event.target.files[0];
-                          if (!file) return;
-
-                          const img = new Image();
-                          img.src = URL.createObjectURL(file);
-
-                          img.onload = async () => {
-
-                            const canvas = document.getElementById('canvas');
-                            const ctx = canvas.getContext('2d');
-                            canvas.width = 224;
-                            canvas.height = 224;
-
-                            // Draw the image on canvas
-                            ctx.drawImage(img, 0, 0, 224, 224);
-
-                            const imageData = ctx.getImageData(0, 0, 224, 224);
-                            const data = imageData.data;
-
-                            const float32Data = new Float32Array(224 * 224 * 3);
-                            for (let i = 0; i < 224 * 224; i++) {
-                              float32Data[i * 3] = data[i * 4] ;        // R
-                              float32Data[i * 3 + 1] = data[i * 4 + 1] ; // G
-                              float32Data[i * 3 + 2] = data[i * 4 + 2] ; // B
-                            }
-
-                            const inputTensor = new ort.Tensor('float32', float32Data, [ 1 ,224 ,224 , 3]);
-
-                            await loadModelAndRunInference(inputTensor);
-                          };
-                        });
-
-                        async function loadModelAndRunInference(inputTensor) {
-
-                          try {
-
-                            const progressBar = document.getElementById('progressBar');
-                            const progressBarInner = document.getElementById('progressBarInner');
-
-                            progressBar.style.display = 'block';
-
-                            let progress = 0;
-                            const interval = setInterval(() => {
-                              progress += 20;
-                              progressBarInner.style.width = progress + '%';
-                              progressBarInner.innerText = progress + '%';
-
-                              if (progress >= 100) {
-                                clearInterval(interval);
+                              const file = event.target.files[0];
+                              if (!file) return;
+                          
+                              const img = new Image();
+                              img.src = URL.createObjectURL(file);
+                          
+                              img.onload = async () => {
+                                  const canvas = document.getElementById('canvas');
+                                  const ctx = canvas.getContext('2d');
+                                  canvas.width = 224;
+                                  canvas.height = 224;
+                          
+                                  ctx.drawImage(img, 0, 0, 224, 224);
+                          
+                                  const imageData = ctx.getImageData(0, 0, 224, 224);
+                                  const data = imageData.data;
+                          
+                                  const float32Data = new Float32Array(224 * 224 * 3);
+                                  for (let i = 0; i < 224 * 224; i++) {
+                                      float32Data[i * 3] = data[i * 4];
+                                      float32Data[i * 3 + 1] = data[i * 4 + 1];
+                                      float32Data[i * 3 + 2] = data[i * 4 + 2];
+                                  }
+                          
+                                  const inputTensor = new ort.Tensor('float32', float32Data, [1, 224, 224, 3]);
+                          
+                                  await loadModelAndRunInference(inputTensor);
+                              };
+                          });
+                          
+                          async function loadModelAndRunInference(inputTensor) {
+                              try {
+                                  const session = await ort.InferenceSession.create('./model.onnx', {
+                                      executionProviders: ["webgl"],
+                                  });
+                          
+                                  const inputName = session.inputNames[0];
+                                  const feeds = {};
+                                  feeds[inputName] = inputTensor;
+                          
+                                  const output = await session.run(feeds);
+                                  const outputTensor = output[session.outputNames[0]];
+                          
+                                  const outputData = Array.from(outputTensor.data);
+                                  const predictedClassIndex = outputData.indexOf(Math.max(...outputData));
+                                  const classNames = ['COVID', 'Lung_Opacity', 'Normal', 'Viral Pneumonia'];
+                                  const predictedClassName = classNames[predictedClassIndex];
+                          
+                                  const patientId = document.getElementById('patientIdInput').value;
+                                  const nextPageUrl = `results.html?predictedClass=${encodeURIComponent(predictedClassName)}&patientId=${encodeURIComponent(patientId)}`;
+                                  window.location.href = nextPageUrl;
+                              } catch (error) {
+                                  console.error('Error during model inference:', error);
                               }
-                            }, 100);
-
-
-                            const session = await ort.InferenceSession.create('./model.onnx',
-                            {
-                              executionProviders: ["webgl"],
-                            }
-                            );
-
-                            const inputName = session.inputNames[0];
-  
-                            const feeds = {};
-
-                            feeds[inputName] = inputTensor;
-
-                            const output = await session.run(feeds);
-
-                            const outputTensor = output[session.outputNames[0]];
-
-                            console.log(`Model output tensor: ${outputTensor.data}`);
-
-                            const outputData = Array.from(outputTensor.data); 
-
-                            const predictedClassIndex = outputData.indexOf(Math.max(...outputData));
-
-                            const classNames = ['COVID', 'Lung_Opacity', 'Normal', 'Viral Pneumonia'];
-
-                            const predictedClassName = classNames[predictedClassIndex ];
-
-                            const nextPageUrl = `results.html?predictedClass=${encodeURIComponent(predictedClassName)}`;
-
-                            window.location.href = nextPageUrl;
-
-                          } catch (error) {
-                            console.error('Error during model inference:', error);
                           }
-                        }
-
-                        </script>
+                          </script>
+                          
                       </div>
                     <button type="button" class="btn btn-primary download-button custom-button">Get Diagnosis</button>
                 </form>
