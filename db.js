@@ -6,7 +6,7 @@ const fs = require('fs');
 const pool = mysql.createPool({
   host: 'mysql-22ed2874-rr456aa-117e.f.aivencloud.com',
   user: 'avnadmin',
-  password: 'AVNS_S2185k_gM0yQwl1y07K',
+  password: '********',
   database: 'defaultdb',
   port: 22562,
   waitForConnections: true,
